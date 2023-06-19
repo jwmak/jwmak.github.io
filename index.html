@@ -1,1 +1,361 @@
-Hello World
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+<head>
+
+
+
+    <title>Jason Mak's Homepage</title>
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+    <meta name="description" content="Jason Mak's Homepage">
+    <meta name="keywords" content="Jason Mak">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type/="text/css" href="css/pub.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+
+
+    <script type="text/javascript">
+        function AppendLinkToText(text, link, mustHaveLink) {
+            var html = ""
+            if (mustHaveLink && link.length == 0) {
+                return html;
+            }
+            if (text.length != 0) {
+                if (link.length != 0) {
+                    html += '<a href=' + link + '>';
+                }
+                html += text;
+                if (link.length != 0) {
+                    html += '</a>';
+                }
+            }
+            return html;
+        }
+        function HighlightText(text, lookfor) {
+            String.prototype.splice = function (idx, rem, str) {
+                return this.slice(0, idx) + str + this.slice(idx + Math.abs(rem));
+            };
+            var beg = text.indexOf(lookfor);
+            var end = beg + lookfor.length;
+            text = text.splice(end, 0, "</b>");
+            text = text.splice(beg, 0, "<b>");
+            return text;
+        }
+        function Publication(publicationJSON) {
+            this.json = publicationJSON;
+            this.toHtml = function () {
+                var html = "";
+                html += '<div class=\'thumb image\'>';
+                html += '<div style=\'padding-top:16px\'>';
+                if (String(this.json.url).length != 0) {
+                    html += '<a href=' + this.json.url + '>';
+                }
+                html += '<img width="80px" height="60px" src=' + this.json.icon + ' alt=\'PAPER\'/>';
+                if (this.json.url.length != 0) {
+                    html += '</a>';
+                }
+                html += '</div>';
+                html += '</div>';
+                html += '<div class=\'ref\'>';
+                html += '<div class=\'title\'>';
+                if (this.json.url.length != 0) {
+                    html += '<a href=' + this.json.url + '>';
+                }
+                html += this.json.title;
+                if (this.json.url.length != 0) {
+                    html += '</a> &nbsp;';
+                }
+                html += '</div>';
+                html += '<div class=\'authors\'>';
+                if (this.json.hasOwnProperty('authors')) {
+                    //html += HighlightText(this.json.authors, 'Muhammad A. ');
+                    html += this.json.authors;
+                } else if (this.json.hasOwnProperty('author')) {
+                    //html += HighlightText(this.json.author, 'Muhammad A. Awad');
+                    html += this.json.author;
+                }
+                html += '</div>';
+
+                html += '<div class=\'links\'>';
+                html += "<i>";
+                if (this.json.hasOwnProperty('series')) {
+                    html += this.json.series;
+                } else if (this.json.hasOwnProperty('dissertation')) {
+                    html += this.json.dissertation + ", " + this.json.year;
+                } else if (this.json.hasOwnProperty('journal')) {
+                    html += this.json.journal + " " + this.json.year;
+                } else if (this.json.hasOwnProperty('booktitle')) {
+                    html += "Chapter in the book \"" + this.json.booktitle + "\" " + this.json.year;
+                }
+                html += "</i>";
+
+                // html += '</div>';
+
+                // html += '<div class=\'links\'>';
+                if (this.json.hasOwnProperty('url')) {
+                    hyperLink = AppendLinkToText("http", this.json.url, true);
+                    if (hyperLink.length != 0) {
+                        html += "  |  " + AppendLinkToText("link", this.json.url, true);
+                    }
+                }
+                if (this.json.hasOwnProperty('arxiv_version')) {
+                    hyperLink = AppendLinkToText("arxiv", this.json.arxiv_version, true);
+                    if (hyperLink.length != 0) {
+                        html += " | " + AppendLinkToText("arxiv", this.json.arxiv_version, true);
+                    }
+                }
+                if (this.json.hasOwnProperty('talk')) {
+                    hyperLink = AppendLinkToText("talk", this.json.talk, true);
+                    if (hyperLink.length != 0) {
+                        html += " | " + AppendLinkToText("talk", this.json.talk, true);
+                    }
+                }
+                if (this.json.hasOwnProperty('slides_pdf')) {
+                    hyperLink = AppendLinkToText("slides pdf", this.json.slides_pdf, true);
+                    if (hyperLink.length != 0) {
+                        html += " | " + AppendLinkToText("slides pdf", this.json.slides_pdf, true);
+                    }
+                }
+                if (this.json.hasOwnProperty('slides')) {
+                    hyperLink = AppendLinkToText("slides", this.json.slides, true);
+                    if (hyperLink.length != 0) {
+                        html += " | " + AppendLinkToText("slides", this.json.slides, true);
+                    }
+                }
+                if (this.json.hasOwnProperty('slides_ppt')) {
+                    hyperLink = AppendLinkToText("slides ppt", this.json.slides_ppt, true);
+                    if (hyperLink.length != 0) {
+                        html += " | " + AppendLinkToText("slides ppt", this.json.slides_ppt, true);
+                    }
+                }
+
+                if (this.json.hasOwnProperty('code')) {
+                    hyperLink = AppendLinkToText("code", this.json.code, true);
+                    if (hyperLink.length != 0) {
+                        html += " | " + AppendLinkToText("code", this.json.code, true);
+                    }
+                }
+
+                //html += "]"
+                html += '</div>';
+                html += '</div>';
+                html += '<hr />';
+                return html;
+            }
+        }
+
+
+
+        function initAllPublications(pubs, refereed, dissertation) {
+            var json = new Array();
+            // "slides_pdf": "talks/MuhammadAwad_ExitSeminar.pdf", \
+            json.push('{                                       \
+                "authors": "Mikhail M. Shashkov, Jason Mak, Shawn Recker, Connie Nguyen, John D. Owens, Kenneth I. Joy",\
+                "title": "Efficient Dense Reconstruction Using Geometry and Image Consistency Constraints", \
+                "booktitle": "Applied Imagery Pattern Recognition Workshop", \
+                "series":"AIPR 2015",\
+                "year" : "2015",\
+                "url": "https://escholarship.org/uc/item/2rj6w5pb",\
+                "icon": "publications/dense.png"\
+             } ');
+            json.push('{                                       \
+                "authors": "Jason Mak, Mauricio Hess-Flores, Shawn Recker, John D. Owens, Kenneth I. Joy",\
+                "title": "A Comparative Study of Recent GPU-Accelerated Multi-View Sequential Reconstruction Triangulation Methods for Large-Scale Scenes", \
+                "series": "ACCV 2014 Workshop: Big Data in 3D Computer Vision",\
+                "year" : "2014", \
+                "url" : "https://escholarship.org/uc/item/5jf612x9", \
+                "icon": "publications/pp.png" \
+             } ');
+            json.push('{                                       \
+                "authors": "Jason Mak, Mauricio Hess-Flores, Shawn Recker, John D. Owens, Kenneth I. Joy",\
+                "title": "GPU-Accelerated and Efficient Multi-View Triangulation for Scene Reconstruction", \
+                "series":"WACV 2014",\
+                "year" : "2014",\
+                "url" : "https://escholarship.org/uc/item/4nf4n0bc",\
+                "icon": "publications/triangulation.png" \
+             } ');
+            json.push('{                                       \
+                "authors": "Ritesh Patel, Yao Zhang, Jason Mak, Andrew Davidson, John Owens",\
+                "title": "Parallel Lossless Data Compression on the GPU", \
+                "series":"InPar 2012",\
+                "year" : "2012",\
+                "url" : "https://escholarship.org/uc/item/77c4w5rz",\
+                "icon": "publications/bzip2.png"\
+             } ');
+            json.push('{                                       \
+                "authors": "Jason Mak, Paul Choboter, Chris Lupo",\
+                "title": "Numerical Ocean Modeling and Simulation with CUDA", \
+                "series":"OCEANS 2011",\
+                "year" : "2011",\
+                "url" : "https://ieeexplore.ieee.org/document/6107199",\
+                "icon": "publications/ocean.png"\
+             } ');
+
+
+            json.forEach(function (element, index, json) {
+                json[index] = (JSON.parse(element));
+            });
+            json.sort(function (a, b) {
+                var x = a.year;
+                var y = b.year;
+                return ((x > y) ? -1 : ((x < y) ? 1 : 0));
+            });
+            if (dissertation) {
+                json = json.filter(element => element.hasOwnProperty('dissertation'));
+            } else {
+                if (refereed) {
+                    json = json.filter(element => !element.hasOwnProperty('dissertation'));
+                    json = json.filter(element => !element.hasOwnProperty('refereed'));
+                } else {
+                    json = json.filter(element => !element.hasOwnProperty('dissertation'));
+                    json = json.filter(element => element.hasOwnProperty('refereed'));
+                }
+            }
+            json.forEach(element => pubs[pubs.length] = new Publication(element));
+        }
+
+        function allPubsInHTML(refereed, dissertation) {
+            var myPubs = [];
+            initAllPublications(myPubs, refereed, dissertation);
+            var htmlPubs = "";
+            htmlPubs += '<div id=\'content\'>';
+            htmlPubs += '<div class=\'results list\'>';
+            for (index = 0; index < myPubs.length; index++) {
+                htmlPubs += myPubs[index].toHtml();
+            }
+            htmlPubs += '</div>';
+            htmlPubs += '</div>';
+            return htmlPubs;
+        }
+        function updatePubListWithAll(refereed, dissertation, id) {
+            var s = allPubsInHTML(refereed, dissertation);
+            document.getElementById(id).innerHTML = s;
+        }
+    </script>
+
+</head>
+
+<body>
+
+    <header>
+        <table border="0" width="55%">
+            <tr>
+                <td><img alt="Photo" height="140px" src="images/jason.jpg"></td>
+                <td>
+                    <h1>Jason Mak's Homepage</h1>
+                    <p>
+                        <i>
+                            e-mail: <a href="mailto:jwmak@ucdavis.edu"><i>jwmak@ucdavis.edu</i></a>
+                            <br>
+                            www: <a href="https://jwmak.github.io">https://jwmak.github.io</a>
+                            <br>
+                            <a href="resume/Jason_Mak_CV.pdf">CV (pdf) </a>|
+                            <!-- <a href="resume/resume.pdf">Resume (Resume) </a>| -->
+                            <a href="https://github.com/jwmak">GitHub</a> |
+                            <a href="https://www.linkedin.com/in/jason-mak-79535927">LinkedIn</a> |
+                            <br>
+
+                            <br>
+
+                            <br>
+
+                            <!-- <a href="resume/resume.pdf">Resume (Resume) </a>| -->
+
+                        </i>
+                        <br>
+                        <!-- <nav>
+                                                            <ul>
+                                                                <li><a href=#bio>Bio</a></li>
+                                                                <li><a href=#pub>Publications</a></li>
+                                                            </ul>
+                                                        </nav> -->
+                    </p>
+                </td>
+            </tr>
+        </table>
+
+    </header>
+
+    <section>
+        <p>
+            <b>Interests:</b><br>
+            parallel computing, GPU computing, accelerated computer vision, 3D reconstruction.
+
+        </p>
+
+
+        <!-- <h1 id="pub">Open-source Code</h1> -->
+        <p>
+            I created a modified version of Ceres Solver to support the evaluation and auto-differentiation of cost functions in parallel on the GPU:<br>
+            <a href="https://github.com/jwmak/ceres-solver-cuda">https://github.com/jwmak/ceres-solver-cuda</a>
+        </p>
+
+        <p style="text-align:center;color:rgb(99, 206, 230);">
+            <b>
+            </b>
+        </p>
+
+        <h1 id="pub">Publications</h1>
+
+        <div id="pubListDiv">
+            <div id="pubListDiv">
+                <script>updatePubListWithAll(true, false, "pubListDiv")</script>
+            </div>
+        </div>
+
+
+
+        <!-- <div id="NonRefPubListDiv">
+            <div id="content">
+                <div class="results list">
+                    <div class="ref">
+                        <div class="title">
+                            <a href="https://github.com/owensgroup/GpuBTree">
+                                Dynamic GPU B-Tree
+                            </a>
+                        </div>
+                        <div class="authors">
+                            A GPU B-Tree optimized for updates.
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="ref">
+                        <div class="title">
+                            <a href="https://github.com/owensgroup/BGHT">
+                                Better GPU Hash Tables
+                            </a>
+                        </div>
+                        <div class="authors">
+                            High-performance static GPU hash tables.
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="ref">
+                        <div class="title">
+                            <a href="https://github.com/gunrock/gunrock/tree/dynamic-graph">
+                                Dynamic hash-based GPU graph data structure (integrated into Gunrock)
+                            </a>
+                        </div>
+                        <div class="authors">
+                            Dynamic hash-based GPU graph data structure (integrated into Gunrock)
+                        </div>
+                    </div>
+                    <hr />
+                </div>
+            </div>
+        </div> -->
+
+    </section>
+
+    <!-- <footer>
+                                            <nav>
+                                                <ul>
+                                                    <li><a href=#bio>Bio</a></li>
+                                                    <li><a href=#pub>Publications</a></li>
+                                                </ul>
+                                            </nav>
+                                        </footer> -->
+
+</body>
+
+</html>
