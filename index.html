@@ -81,7 +81,7 @@
                 if (this.json.hasOwnProperty('series')) {
                     html += this.json.series;
                 } else if (this.json.hasOwnProperty('dissertation')) {
-                    html += this.json.dissertation + ", " + this.json.year;
+                    html += this.json.dissertation;
                 } else if (this.json.hasOwnProperty('journal')) {
                     html += this.json.journal + " " + this.json.year;
                 } else if (this.json.hasOwnProperty('booktitle')) {
@@ -149,6 +149,25 @@
         function initAllPublications(pubs, refereed, dissertation) {
             var json = new Array();
             // "slides_pdf": "talks/MuhammadAwad_ExitSeminar.pdf", \
+            json.push('{                                       \
+                "authors": "Jason Mak",\
+                "title": "Large-Scale 3D Reconstruction on the GPU", \
+                "url" : "https://escholarship.org/uc/item/9zn4d4xk",\
+                "code":  "", \
+                "year": "", \
+                "icon": "publications/dissertation.png", \
+                "dissertation": "University of California, Davis"\
+             } ');
+         /*    json.push('{                                       \
+                "authors": "Mikhail M. Shashkov, Jason Mak, Shawn Recker, Connie Nguyen, John D. Owens, Kenneth I. Joy",\
+                "title": "Efficient Dense Reconstruction Using Geometry and Image Consistency Constraints", \
+                "booktitle": "Applied Imagery Pattern Recognition Workshop", \
+                "series":"AIPR 2015",\
+                "year" : "2015",\
+                "url": "https://escholarship.org/uc/item/2rj6w5pb",\
+                "icon": "publications/dense.png",\
+                "refereed": "false" \
+             } ');*/
             json.push('{                                       \
                 "authors": "Mikhail M. Shashkov, Jason Mak, Shawn Recker, Connie Nguyen, John D. Owens, Kenneth I. Joy",\
                 "title": "Efficient Dense Reconstruction Using Geometry and Image Consistency Constraints", \
@@ -279,7 +298,7 @@
     <section>
         <p>
             <b>Interests:</b><br>
-            parallel computing, GPU computing, accelerated computer vision, 3D reconstruction.
+            I am passionate about using parallel computing on GPU and CPU architectures to speed up applications, especially those in the field of computer vision and computer graphics. 
 
         </p>
 
@@ -294,6 +313,24 @@
             <b>
             </b>
         </p>
+        
+        <h1 id="pub">Dissertation</h1>
+
+        <div id="dissertationListDiv">
+            <div id="dissertationListDiv">
+                <script>updatePubListWithAll(false, true, "dissertationListDiv")</script>
+            </div>
+        </div>    
+        
+        <!--    
+        <h1 id="pub">Arxiv Articles</h1>
+
+        <div id="NonRefPubListDiv">
+            <div id="NonRefPubListDiv">
+                <script>ithAll(false, false, "NonRefPubListDiv")</script>
+            </div>
+        </div>
+        -->
 
         <h1 id="pub">Publications</h1>
 
@@ -302,6 +339,7 @@
                 <script>updatePubListWithAll(true, false, "pubListDiv")</script>
             </div>
         </div>
+
 
 
 
